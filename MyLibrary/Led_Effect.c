@@ -8,10 +8,10 @@
  uint16_t NumberEffect =3;
  uint16_t CountRepeat =0;
  uint16_t valueOfCountEffectRun =0;
+ uint16_t preStatusLEDADC =7;
+ uint16_t numberLEDADC =0;
  void SetEffectNumber(uint16_t *EffectNumber)
  {
-	  valueOfCountEffectRun = *EffectNumber;
-	  valueOfCountEffectRun = *Count_Effect_Run;
 	  Count_Effect_Run = EffectNumber;
 	 	if(*Count_Effect_Run >= NumberEffect)
 		{
@@ -115,6 +115,36 @@ void tatDan(uint32_t timeDelay)
 		 checkForSwitchEffect();
 	}
 
+}
+void TurnOnBaseOnADCValue(uint16_t valueADC)
+{
+	numberLEDADC = valueADC/500;
+	if(preStatusLEDADC!= numberLEDADC )
+	{
+		preStatusLEDADC = numberLEDADC;
+	  if(numberLEDADC == 0)
+		{
+			for(i =0;i<NumberLed;i++)
+			{
+				HAL_GPIO_WritePin(LedRun[i].GPIOx,LedRun[i]. GPIO_Pin,GPIO_PIN_RESET);
+			}
+	  }
+		else
+		{
+			for(i =0;i<NumberLed;i++)
+			{
+				if(i < numberLEDADC)
+				{
+					 HAL_GPIO_WritePin(LedRun[i].GPIOx,LedRun[i]. GPIO_Pin,GPIO_PIN_SET);
+				}
+				else
+				{
+				  HAL_GPIO_WritePin(LedRun[i].GPIOx,LedRun[i]. GPIO_Pin,GPIO_PIN_RESET);
+				}
+			}
+		}
+		
+	}
 }
 void Led_Effect_Init(Led_t * Led, uint8_t LedNumber)
 {
